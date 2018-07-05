@@ -203,6 +203,7 @@ class CrawlerRunner(object):
         return Crawler(spidercls, self.settings)
 
     def stop(self):
+        #停止
         """
         Stops simultaneously all the crawling jobs taking place.
 
