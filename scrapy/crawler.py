@@ -40,6 +40,7 @@ class Crawler(object):
         self.signals = SignalManager(self)
         self.stats = load_object(self.settings['STATS_CLASS'])(self)
 
+        #设置log的处理器，将log处理器处理的次数记录到crawler的stats变量中
         handler = LogCounterHandler(self, level=self.settings.get('LOG_LEVEL'))
         logging.root.addHandler(handler)
         if get_scrapy_root_handler() is not None:
@@ -50,6 +51,7 @@ class Crawler(object):
         self.__remove_handler = lambda: logging.root.removeHandler(handler)
         self.signals.connect(self.__remove_handler, signals.engine_stopped)
 
+        #获取log的格式
         lf_cls = load_object(self.settings['LOG_FORMATTER'])
         self.logformatter = lf_cls.from_crawler(self)
         self.extensions = ExtensionManager.from_crawler(self)
@@ -134,6 +136,8 @@ class CrawlerRunner(object):
         if isinstance(settings, dict) or settings is None:
             settings = Settings(settings)
         self.settings = settings
+
+        # 将爬虫包里的爬虫都导入进来
         self.spider_loader = _get_spider_loader(settings)
         self._crawlers = set()
         self._active = set()

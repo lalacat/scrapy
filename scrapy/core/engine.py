@@ -18,6 +18,7 @@ from scrapy.utils.misc import load_object
 from scrapy.utils.reactor import CallLaterOnce
 from scrapy.utils.log import logformatter_adapter, failure_to_exc_info
 
+#__name__指的是包的名字
 logger = logging.getLogger(__name__)
 
 
@@ -30,6 +31,7 @@ class Slot(object):
         self.close_if_idle = close_if_idle
         self.nextcall = nextcall
         self.scheduler = scheduler
+        #不断的调用方法
         self.heartbeat = task.LoopingCall(nextcall.schedule)
 
     def add_request(self, request):
@@ -82,6 +84,7 @@ class ExecutionEngine(object):
         self.start_time = time()
         yield self.signals.send_catch_log_deferred(signal=signals.engine_started)
         self.running = True
+
         self._closewait = defer.Deferred()
         yield self._closewait
 
@@ -97,6 +100,7 @@ class ExecutionEngine(object):
 
         If it has already been started, stop it. In all cases, close all spiders
         and the downloader.
+        当爬虫已经开始了，要停止下了，就要停止所有的爬虫
         """
         if self.running:
             # Will also close spiders and downloader
@@ -291,7 +295,7 @@ class ExecutionEngine(object):
 
     def close_spider(self, spider, reason='cancelled'):
         """Close (cancel) spider and clear all its outstanding requests"""
-
+        #关闭所有的爬虫和未解决的requests
         slot = self.slot
         if slot.closing:
             return slot.closing
