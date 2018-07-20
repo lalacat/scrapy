@@ -24,6 +24,7 @@ from scrapy import signals
 logger = logging.getLogger(__name__)
 
 
+
 class Crawler(object):
 
     def __init__(self, spidercls, settings=None):
@@ -109,6 +110,7 @@ class Crawler(object):
     @defer.inlineCallbacks
     def stop(self):
         if self.crawling:
+            print("stop")
             self.crawling = False
             yield defer.maybeDeferred(self.engine.stop)
 
@@ -180,8 +182,10 @@ class CrawlerRunner(object):
         self._active.add(d)
 
         def _done(result):
+            logger.debug("_done")
             self.crawlers.discard(crawler)
             self._active.discard(d)
+
             return result
 
         return d.addBoth(_done)
