@@ -80,11 +80,16 @@ class Downloader(object):
         self.signals = crawler.signals
         self.slots = {}
         self.active = set()
-        self.handlers = DownloadHandlers(crawler)
+        self.handlers = DownloadHandlers(crawler)# 初始化DownloadHandlers
+        # 从配置中获取设置的并发数
         self.total_concurrency = self.settings.getint('CONCURRENT_REQUESTS')
+        # 同一域名并发数
         self.domain_concurrency = self.settings.getint('CONCURRENT_REQUESTS_PER_DOMAIN')
+        # 同一IP并发数
         self.ip_concurrency = self.settings.getint('CONCURRENT_REQUESTS_PER_IP')
+        # 随机延迟下载时间
         self.randomize_delay = self.settings.getbool('RANDOMIZE_DOWNLOAD_DELAY')
+        # 初始化下载器中间件
         self.middleware = DownloaderMiddlewareManager.from_crawler(crawler)
         self._slot_gc_loop = task.LoopingCall(self._slot_gc)
         self._slot_gc_loop.start(60)

@@ -64,7 +64,9 @@ DNS_TIMEOUT = 60
 
 DOWNLOAD_DELAY = 0
 
+# 用户可自定义的下载处理器
 DOWNLOAD_HANDLERS = {}
+# 默认的下载处理器
 DOWNLOAD_HANDLERS_BASE = {
     'data': 'scrapy.core.downloader.handlers.datauri.DataURIDownloadHandler',
     'file': 'scrapy.core.downloader.handlers.file.FileDownloadHandler',

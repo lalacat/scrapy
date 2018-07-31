@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 
 class MiddlewareManager(object):
     """Base class for implementing middleware managers"""
+    """所有中间件的父类，提供中间件公共的方法"""
 
     component_name = 'foo middleware'
 
@@ -21,6 +22,7 @@ class MiddlewareManager(object):
             self._add_middleware(mw)
 
     @classmethod
+    # 调用子类_get_mwlist_from_settings得到所有中间件类的模块
     def _get_mwlist_from_settings(cls, settings):
         raise NotImplementedError
 

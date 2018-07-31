@@ -18,10 +18,12 @@ class DownloaderMiddlewareManager(MiddlewareManager):
     component_name = 'downloader middleware'
 
     @classmethod
+    # 从配置文件DOWNLOADER_MIDDLEWARES_BASE和DOWNLOADER_MIDDLEWARES获得所有下载器中间件
     def _get_mwlist_from_settings(cls, settings):
         return build_component_list(
             settings.getwithbase('DOWNLOADER_MIDDLEWARES'))
 
+    # 定义下载器中间件请求、响应、异常一串方法
     def _add_middleware(self, mw):
         if hasattr(mw, 'process_request'):
             self.methods['process_request'].append(mw.process_request)

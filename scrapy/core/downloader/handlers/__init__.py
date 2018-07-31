@@ -17,11 +17,14 @@ class DownloadHandlers(object):
 
     def __init__(self, crawler):
         self._crawler = crawler
-        self._schemes = {}  # stores acceptable schemes on instancing
-        self._handlers = {}  # stores instanced handlers for schemes
+        self._schemes = {}  # 存储scheme对应的类路径，后面用于实例化
+        self._handlers = {}  # 存储scheme对应的下载器
         self._notconfigured = {}  # remembers failed handlers
+        # 从配置中找到DOWNLOAD_HANDLERS_BASE，构造下载处理器
+        # 注意：这里是调用getwithbase方法，取的是配置中的XXXX_BASE配置
         handlers = without_none_values(
             crawler.settings.getwithbase('DOWNLOAD_HANDLERS'))
+        # 存储scheme对应的类路径，后面用于实例化
         for scheme, clspath in six.iteritems(handlers):
             self._schemes[scheme] = clspath
 

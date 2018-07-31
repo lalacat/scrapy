@@ -14,12 +14,12 @@ class Scheduler(object):
 
     def __init__(self, dupefilter, jobdir=None, dqclass=None, mqclass=None,
                  logunser=False, stats=None, pqclass=None):
-        self.df = dupefilter
-        self.dqdir = self._dqdir(jobdir)
-        self.pqclass = pqclass
-        self.dqclass = dqclass
-        self.mqclass = mqclass
-        self.logunser = logunser
+        self.df = dupefilter # 指纹过滤器
+        self.dqdir = self._dqdir(jobdir)# 任务队列文件夹
+        self.pqclass = pqclass # 优先级任务队列类
+        self.dqclass = dqclass # 磁盘任务队列类
+        self.mqclass = mqclass # 内存任务队列类
+        self.logunser = logunser # 日志是否序列化
         self.stats = stats
 
     @classmethod
