@@ -70,6 +70,8 @@ class MiddlewareManager(object):
         return process_parallel(self.methods[methodname], obj, *args)
 
     def _process_chain(self, methodname, obj, *args):
+        for i in self.methods.items():
+            print(i)
         return process_chain(self.methods[methodname], obj, *args)
 
     def _process_chain_both(self, cb_methodname, eb_methodname, obj, *args):

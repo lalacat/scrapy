@@ -66,6 +66,8 @@ def parallel(iterable, count, callable, *args, **named):
 def process_chain(callbacks, input, *a, **kw):
     """Return a Deferred built by chaining the given callbacks"""
     d = defer.Deferred()
+    print(type(callbacks))
+    print((callbacks))
     for x in callbacks:
         d.addCallback(x, *a, **kw)
     d.callback(input)

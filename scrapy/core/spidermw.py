@@ -75,4 +75,15 @@ class SpiderMiddlewareManager(MiddlewareManager):
     def process_start_requests(self, start_requests, spider):
         return self._process_chain('process_start_requests', start_requests, spider)
 
+from tests.test_spiderloader.test_spiders.spider2 import Spider2
+web_list = ["https://www.smzdm.com/homepage/json_more?p=1",
+            "https://www.smzdm.com/homepage/json_more?p=2",
+            "https://www.smzdm.com/homepage/json_more?p=3"]
 
+
+s2 = Spider2()
+s = SpiderMiddlewareManager()
+d =  s.process_start_requests(iter(web_list),s2)
+
+for i in d.result:
+    print(i)
