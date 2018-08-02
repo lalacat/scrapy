@@ -263,8 +263,11 @@ class ExecutionEngine(object):
         assert self.has_capacity(), "No free spider slot when opening %r" % \
             spider.name
         logger.info("Spider opened", extra={'spider': spider})
+        # 注册_next_request调度方法，循环调度
         nextcall = CallLaterOnce(self._next_request, spider)
+        # 初始化scheduler
         scheduler = self.scheduler_cls.from_crawler(self.crawler)
+        # 调用爬虫中间件，处理种子请求
         start_requests = yield self.scraper.spidermw.process_start_requests(start_requests, spider)
         slot = Slot(start_requests, close_if_idle, nextcall, scheduler)
         self.slot = slot

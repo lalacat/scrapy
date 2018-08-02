@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 class MiddlewareManager(object):
     """Base class for implementing middleware managers"""
     """所有中间件的父类，提供中间件公共的方法"""
+    """本质就是添加inner defer"""
 
     component_name = 'foo middleware'
 
