@@ -15,6 +15,7 @@ def _parsed_url_args(parsed):
     # Assume parsed is urlparse-d from Request.url,
     # which was passed via safe_url_string and is ascii-only.
     b = lambda s: to_bytes(s, encoding='ascii')
+    print(b)
     path = urlunparse(('', '', parsed.path or '/', parsed.params, parsed.query, ''))
     path = b(path)
     host = b(parsed.hostname)
@@ -36,6 +37,8 @@ def _parse(url):
     parsed = urlparse(url)
     return _parsed_url_args(parsed)
 
+url = _parse("http://www.cnblogs.com:80/shuchao/")
+print(url)
 
 class ScrapyHTTPPageGetter(HTTPClient):
 
