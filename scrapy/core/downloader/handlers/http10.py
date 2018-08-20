@@ -3,6 +3,7 @@
 from twisted.internet import reactor
 from scrapy.utils.misc import load_object
 from scrapy.utils.python import to_unicode
+from twisted.internet.ssl import ClientContextFactory
 
 
 class HTTP10DownloadHandler(object):
@@ -24,15 +25,4 @@ class HTTP10DownloadHandler(object):
                                       self.ClientContextFactory())
         else:
             return reactor.connectTCP(host, port, factory)
-url = "https://www.chapters.indigo.ca/en-ca/books/amazon-sucks-donkey-balls/9780470170779-item.html"
-def print_fun(content):
-    print(content)
-try:
-    h = HTTP10DownloadHandler()
-    d = h.download_request(url,1)
-    d.addCallback(print_fun)
 
-    d.addCallback(lambda _:reactor.stop())
-except Exception as e :
-    print(e)
-reactor.run()
