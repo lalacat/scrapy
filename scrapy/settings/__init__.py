@@ -9,7 +9,7 @@ from pprint import pformat
 from scrapy.utils.deprecate import create_deprecated_class
 from scrapy.exceptions import ScrapyDeprecationWarning
 
-from . import default_settings
+from scrapy.settings import default_settings
 
 
 SETTINGS_PRIORITIES = {
