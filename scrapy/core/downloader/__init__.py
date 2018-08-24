@@ -17,9 +17,16 @@ from .handlers import DownloadHandlers
 
 
 class Slot(object):
-    """Downloader slot"""
+    """
+    Downloader slot
+    这个slots是一个存储Slot对象的字典，key是request对应的域名，值是一个Slot对象。
+    Slot对象用来控制一种Request下载请求，通常这种下载请求是对于同一个域名。
+    这个Slot对象还控制了访问这个域名的并发度，下载延迟控制，随机延时等，
+    主要是为了控制对一个域名的访问策略，一定程度上避免流量过大被封IP，不能继续爬取。
+    """
 
     def __init__(self, concurrency, delay, randomize_delay):
+        #  并发度，延迟时间和随机延迟
         self.concurrency = concurrency
         self.delay = delay
         self.randomize_delay = randomize_delay
@@ -58,6 +65,7 @@ class Slot(object):
         )
 
 
+#  延迟
 def _get_concurrency_delay(concurrency, spider, settings):
     delay = settings.getfloat('DOWNLOAD_DELAY')
     if hasattr(spider, 'DOWNLOAD_DELAY'):
@@ -79,6 +87,7 @@ class Downloader(object):
         self.settings = crawler.settings
         self.signals = crawler.signals
         self.slots = {}
+        # active是一个活动集合，用于记录当前正在下载的request集合。
         self.active = set()
         self.handlers = DownloadHandlers(crawler)# 初始化DownloadHandlers
         # 从配置中获取设置的并发数
@@ -91,6 +100,7 @@ class Downloader(object):
         self.randomize_delay = self.settings.getbool('RANDOMIZE_DOWNLOAD_DELAY')
         # 初始化下载器中间件
         self.middleware = DownloaderMiddlewareManager.from_crawler(crawler)
+        # ask.LoopingCall安装了一个60s的定时心跳函数_slot_gc,这个函数用于对slots中的对象进行定期的回收。
         self._slot_gc_loop = task.LoopingCall(self._slot_gc)
         self._slot_gc_loop.start(60)
 
@@ -107,6 +117,8 @@ class Downloader(object):
         return len(self.active) >= self.total_concurrency
 
     def _get_slot(self, request, spider):
+        #  通过slots集合达到了缓存的目的，对于同一个域名的访问策略可以通过slots获取而不用每次都解析配置。
+        #  然后根据key从slots里取对应的Slot对象，如果还没有，则构造一个新的对象。
         key = self._get_slot_key(request, spider)
         if key not in self.slots:
             conc = self.ip_concurrency if self.ip_concurrency else self.domain_concurrency
@@ -116,6 +128,7 @@ class Downloader(object):
         return key, self.slots[key]
 
     def _get_slot_key(self, request, spider):
+        #  request对应的域名也增加了缓存机制:urlparse_cached,dnscahe.
         if 'download_slot' in request.meta:
             return request.meta['download_slot']
 
@@ -197,7 +210,13 @@ class Downloader(object):
         for slot in six.itervalues(self.slots):
             slot.close()
 
+    #  垃圾回收
     def _slot_gc(self, age=60):
+        """
+        如果一个Slot对象没有正在活动的下载request,且距离上次活动的时间已经过去了60s则进行回收。
+        :param age:
+        :return:
+        """
         mintime = time() - age
         for key, slot in list(self.slots.items()):
             if not slot.active and slot.lastseen + slot.delay < mintime:
