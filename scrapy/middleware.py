@@ -70,7 +70,6 @@ class MiddlewareManager(object):
         return process_parallel(self.methods[methodname], obj, *args)
 
     def _process_chain(self, methodname, obj, *args):
-        self.methods[methodname] = [print_01,print_02,print_03,print_04]
         return process_chain(self.methods[methodname], obj, *args)
 
     def _process_chain_both(self, cb_methodname, eb_methodname, obj, *args):
@@ -83,14 +82,4 @@ class MiddlewareManager(object):
     def close_spider(self, spider):
         return self._process_parallel('close_spider', spider)
 
-def print_01(_,content):
-    print(content,str(1))
-def print_02(_,content):
-    print(content,str(2))
-def print_03(_,content):
-    print(content,str(3))
 
-def print_04(_,
-
-             content):
-    print(content,str(4))
