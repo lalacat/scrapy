@@ -110,6 +110,7 @@ class Downloader(object):
             return response
 
         self.active.add(request)
+        #  调用中间件管理器的download方法，同时传入了自己的_enqueue_request方法。
         dfd = self.middleware.download(self._enqueue_request, request, spider)
         return dfd.addBoth(_deactivate)
 
