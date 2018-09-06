@@ -90,9 +90,9 @@ class Downloader(object):
         # active是一个活动集合，用于记录当前正在下载的request集合。
         self.active = set()
         self.handlers = DownloadHandlers(crawler)# 初始化DownloadHandlers
-        # 从配置中获取设置的并发数
+        # 从配置中获取设置的并发数（一次下载页面的最大个数）
         self.total_concurrency = self.settings.getint('CONCURRENT_REQUESTS')
-        # 同一域名并发数
+        # 同一域名并发数（HTTPConnectionPool最大保持连接个数）
         self.domain_concurrency = self.settings.getint('CONCURRENT_REQUESTS_PER_DOMAIN')
         # 同一IP并发数
         self.ip_concurrency = self.settings.getint('CONCURRENT_REQUESTS_PER_IP')
@@ -122,6 +122,7 @@ class Downloader(object):
         #  然后根据key从slots里取对应的Slot对象，如果还没有，则构造一个新的对象。
         key = self._get_slot_key(request, spider)
         if key not in self.slots:
+            #  ip_concurrency默认为0，domain_concurrency默认为8，
             conc = self.ip_concurrency if self.ip_concurrency else self.domain_concurrency
             conc, delay = _get_concurrency_delay(conc, spider, self.settings)
             self.slots[key] = Slot(conc, delay, self.randomize_delay)
